@@ -1,4 +1,9 @@
-const User = require('./user')
+const Order = require('./Order')
+const User = require('./User')
+const Token = require('./Token')
+
 module.exports = {
-    User
+    Order,
+    User,
+    Token
 };
