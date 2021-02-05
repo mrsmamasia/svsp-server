@@ -60,7 +60,6 @@ module.exports = {
     async login({ body: { email, password } }, res) {
         try {
             const foundUser = await User.findOne({ email })
-            console.log(foundUser)
             if (!foundUser) {
                 let err;
                 return res.status(403).send({
@@ -73,7 +72,6 @@ module.exports = {
             // сравниваем
             // TO_DO
             const isPasswordCorrect = foundUser.password === password
-            console.log(isPasswordCorrect)
             if (!isPasswordCorrect) {
                 return res.status(403).send({
                     message: 'Извините, но +++логин или пароль не подходят!',
@@ -87,17 +85,14 @@ module.exports = {
             }, process.env.JWT_SECRET, {
                 expiresIn: '1m'
             })
-
             const refreshToken = jwt.sign({
                 userId: foundUser._id,
                 email: foundUser.email,
             }, process.env.JWT_SECRET_REFRESH)
 
-
             const foundToken = await Token.findOne({
                 user: foundUser._id
             })
-
 
             if (foundToken) {
                 await Token.findByIdAndUpdate(foundToken._id, { token: refreshToken })
@@ -118,7 +113,6 @@ module.exports = {
             })
 
         } catch (err) {
-            console.log(err)
             return res.status(403).send({
                 message: 'Извините, но логин или ____пароль не подходят!',
                 err
