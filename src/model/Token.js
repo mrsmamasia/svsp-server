@@ -9,7 +9,6 @@ const {
 const schema = new Schema({
     token: {
         type: String,
-        default: "",
     },
     user: {
         type: ObjectId,

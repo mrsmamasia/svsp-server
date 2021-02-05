@@ -60,11 +60,11 @@ module.exports = {
     async login({ body: { email, password } }, res) {
         try {
             const foundUser = await User.findOne({ email })
-
+            console.log(foundUser)
             if (!foundUser) {
                 let err;
                 return res.status(403).send({
-                    message: 'Извините, но логин или пароль не подходят!',
+                    message: 'Извините, но ---логин или пароль не подходят!',
                     err
                 })
             }
@@ -73,10 +73,10 @@ module.exports = {
             // сравниваем
             // TO_DO
             const isPasswordCorrect = foundUser.password === password
-
+            console.log(isPasswordCorrect)
             if (!isPasswordCorrect) {
                 return res.status(403).send({
-                    message: 'Извините, но логин или пароль не подходят!',
+                    message: 'Извините, но +++логин или пароль не подходят!',
                     err
                 })
             }
@@ -93,9 +93,11 @@ module.exports = {
                 email: foundUser.email,
             }, process.env.JWT_SECRET_REFRESH)
 
+
             const foundToken = await Token.findOne({
                 user: foundUser._id
             })
+
 
             if (foundToken) {
                 await Token.findByIdAndUpdate(foundToken._id, { token: refreshToken })
@@ -116,10 +118,12 @@ module.exports = {
             })
 
         } catch (err) {
+            console.log(err)
             return res.status(403).send({
-                message: 'Извините, но логин или пароль не подходят!',
+                message: 'Извините, но логин или ____пароль не подходят!',
                 err
             })
+
         }
     },
     async signUp({ body: { email, password } }, res) {
@@ -137,15 +141,17 @@ module.exports = {
             await createdUser.save();
 
             return res.status(200).send({
-                message: "Пользователь создан"
+                message: `Пользователь ${createdUser} создан`
             })
             // сделать емейл об удачной регистрации
 
         } catch (err) {
             return res.status(403).send({
                 message: 'Извините, но логин или пароль не подходят!',
-                err
+                err,
+
             })
+
         }
     }
 }

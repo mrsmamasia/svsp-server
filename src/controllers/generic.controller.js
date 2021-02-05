@@ -1,46 +1,52 @@
-const boom = require('boom')
+const boom = require("boom");
 
-const genericCrud = (model) => ({
-    async get({ params: { id }}, res) {
+const genericCrud = (model, {
+    get = '',
+    getAll = ''
+} = {}) => ({
+    async get({ params: { id } }, res) {
         try {
-            const item = await  model.findById(id)
-            return res.status(200).send(item)
+            const item = await model.findById(id).populate(get);
+            return res.status(200).send(item);
         } catch (err) {
-          throw boom.boomify(err)
+            return res.status(400).send(boom.boomify(err));
         }
     },
-    async getAll(req, res) {
+    async getAll(_, res) {
         try {
-            const items = await  model.find()
-            return res.status(200).send(items)
+            const items = await model.find().populate(getAll);
+            return res.status(200).send(items);
         } catch (err) {
-            throw boom.boomify(err)
+            return res.status(400).send(boom.boomify(err));
         }
     },
-    async create({ body }) {
+    async create({ body }, res) {
+        // title: Contrlo
         try {
-            const item = new model(body)
-            const newItem = await item.save()
-            return res.status(200).send(newItem)
+            const item = new model(body);
+            const newItem = await item.save();
+            return res.status(200).send(newItem);
         } catch (err) {
-            throw boom.boomify(err)
+            return res.status(400).send(boom.boomify(err));
         }
     },
-    async update({ params: { id }, body }) {
+    async update({ params: { id }, body }, res) {
+        // title: Control
         try {
-            const item = await  model.findByIdAndUpdate(id,body,{new:true})
-            return res.status(200).send(item)
+            const item = await model.findByIdAndUpdate(id, body, { new: true });
+            return res.status(200).send(item);
         } catch (err) {
-            throw boom.boomify(err)
+            return res.status(400).send(boom.boomify(err));
         }
     },
-    async delete({ params: {id}}) {
+    async delete({ params: { id } }, res) {
         try {
-            await model.findByIdAndDelete(id)
-            return res.status(200).send({ status: 'OK', message: 'Продукт удален'})
-    } catch (err) {
-        throw boom.boomify(err)
-    }},
-})
+            await model.findByIdAndDelete(id);
+            return res.status(200).send({ status: "OK", message: "Продукт удален" });
+        } catch (err) {
+            return res.status(400).send(boom.boomify(err));
+        }
+    },
+});
 
-module.exports = genericCrud
+module.exports = genericCrud;
